@@ -861,6 +861,37 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeRangeFilter,
   };
 
+  // Dark mode toggle
+  const darkModeToggle = document.getElementById("dark-mode-toggle");
+
+  function applyTheme(theme) {
+    document.documentElement.setAttribute("data-theme", theme);
+    darkModeToggle.textContent = theme === "dark" ? "☀️" : "🌙";
+    darkModeToggle.setAttribute(
+      "title",
+      theme === "dark" ? "Switch to light mode" : "Switch to dark mode"
+    );
+    darkModeToggle.setAttribute(
+      "aria-label",
+      theme === "dark" ? "Switch to light mode" : "Switch to dark mode"
+    );
+  }
+
+  // Load saved preference, then system preference, then default to light
+  const savedTheme =
+    localStorage.getItem("theme") ||
+    (window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light");
+  applyTheme(savedTheme);
+
+  darkModeToggle.addEventListener("click", () => {
+    const current = document.documentElement.getAttribute("data-theme") || "light";
+    const next = current === "dark" ? "light" : "dark";
+    localStorage.setItem("theme", next);
+    applyTheme(next);
+  });
+
   // Initialize app
   checkAuthentication();
   initializeFilters();
