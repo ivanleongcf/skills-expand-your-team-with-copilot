@@ -877,12 +877,16 @@ document.addEventListener("DOMContentLoaded", () => {
     );
   }
 
-  // Load saved preference or default to light
-  const savedTheme = localStorage.getItem("theme") || "light";
+  // Load saved preference, then system preference, then default to light
+  const savedTheme =
+    localStorage.getItem("theme") ||
+    (window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light");
   applyTheme(savedTheme);
 
   darkModeToggle.addEventListener("click", () => {
-    const current = document.documentElement.getAttribute("data-theme");
+    const current = document.documentElement.getAttribute("data-theme") || "light";
     const next = current === "dark" ? "light" : "dark";
     localStorage.setItem("theme", next);
     applyTheme(next);
