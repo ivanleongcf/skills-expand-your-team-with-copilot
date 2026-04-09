@@ -34,6 +34,8 @@ document.addEventListener("DOMContentLoaded", () => {
     technology: { label: "Technology", color: "#e8eaf6", textColor: "#3949ab" },
   };
 
+  const SCHOOL_NAME = "Mergington High School";
+
   // State for activities and filters
   let allActivities = {};
   let currentFilter = "all";
@@ -595,11 +597,15 @@ document.addEventListener("DOMContentLoaded", () => {
     // Add click handler for share button
     const shareButton = activityCard.querySelector(".share-button");
     shareButton.addEventListener("click", () => {
-      const shareText = `Check out "${name}" at Mergington High School! ${details.description} Schedule: ${formattedSchedule}`;
+      const shareText = `Check out "${name}" at ${SCHOOL_NAME}! ${details.description} Schedule: ${formattedSchedule}`;
       const shareUrl = window.location.href;
 
       if (navigator.share) {
-        navigator.share({ title: name, text: shareText, url: shareUrl });
+        navigator.share({ title: name, text: shareText, url: shareUrl }).catch((err) => {
+          if (err.name !== "AbortError") {
+            showMessage("Could not share the activity.", "error");
+          }
+        });
       } else {
         navigator.clipboard.writeText(`${shareText}\n${shareUrl}`).then(() => {
           showMessage("Activity link copied to clipboard!", "success");
