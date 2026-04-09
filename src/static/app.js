@@ -569,6 +569,11 @@ document.addEventListener("DOMContentLoaded", () => {
         `
         }
       </div>
+      <div class="share-buttons">
+        <button class="share-button" data-activity="${name}" aria-label="Share ${name}">
+          <span class="share-icon">🔗</span> Share
+        </button>
+      </div>
     `;
 
     // Add click handlers for delete buttons
@@ -586,6 +591,23 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
     }
+
+    // Add click handler for share button
+    const shareButton = activityCard.querySelector(".share-button");
+    shareButton.addEventListener("click", () => {
+      const shareText = `Check out "${name}" at Mergington High School! ${details.description} Schedule: ${formattedSchedule}`;
+      const shareUrl = window.location.href;
+
+      if (navigator.share) {
+        navigator.share({ title: name, text: shareText, url: shareUrl });
+      } else {
+        navigator.clipboard.writeText(`${shareText}\n${shareUrl}`).then(() => {
+          showMessage("Activity link copied to clipboard!", "success");
+        }).catch(() => {
+          showMessage("Could not copy to clipboard.", "error");
+        });
+      }
+    });
 
     activitiesList.appendChild(activityCard);
   }
